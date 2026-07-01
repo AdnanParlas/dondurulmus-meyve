@@ -41,14 +41,15 @@
 </head>
 <body>
 
-  <!-- Şifre kapısı -->
+  <!-- Giriş kapısı (Supabase hesabı) -->
   <div class="gate" id="gate">
     <div class="funnel__stepwrap">
       <h2>🔒 Yönetim Paneli</h2>
-      <p class="muted">Devam etmek için şifrenizi girin.</p>
-      <input id="pw" class="text-input" type="password" placeholder="Şifre" />
+      <p class="muted">Supabase hesabınızla giriş yapın.</p>
+      <input id="email" class="text-input" type="email" placeholder="E-posta" autocomplete="username" />
+      <input id="pw" class="text-input" type="password" placeholder="Şifre" autocomplete="current-password" />
       <button class="btn btn--cta" id="loginBtn" style="width:100%">Giriş</button>
-      <p id="pwErr" class="form-err" hidden>Hatalı şifre.</p>
+      <p id="pwErr" class="form-err" hidden></p>
     </div>
   </div>
 
@@ -59,13 +60,14 @@
         <h1>📊 Lead Takip Paneli</h1>
         <p class="muted">Dondurulmuş Meyve & Sebze İthalatı — CRM</p>
       </div>
-      <a href="index.html" class="btn btn--ghost btn--sm">← Siteye dön</a>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a href="index.html" class="btn btn--ghost btn--sm">← Siteye dön</a>
+        <button class="btn btn--ghost btn--sm" id="logoutBtn">Çıkış</button>
+      </div>
     </div>
 
-    <div class="note-box">
-      ℹ️ Bu panel yalnızca <b>bu tarayıcıda</b> oluşturulan ön teklifleri gösterir (localStorage).
-      Müşteriler asıl bilgiyi WhatsApp/e-posta ile gönderir. Verileri kalıcı tutmak için düzenli
-      <b>JSON/CSV dışa aktarma</b> yapın.
+    <div class="note-box" id="sourceNote">
+      Veriler yükleniyor…
     </div>
 
     <div class="stat-grid" id="stats"></div>
@@ -74,7 +76,6 @@
       <button class="btn btn--sm btn--ghost" id="exportCsv">⬇️ CSV indir</button>
       <button class="btn btn--sm btn--ghost" id="exportJson">⬇️ JSON indir</button>
       <button class="btn btn--sm btn--ghost" id="refresh">🔄 Yenile</button>
-      <button class="btn btn--sm btn--danger" id="clear">🗑️ Tümünü temizle</button>
     </div>
 
     <div class="panel">
@@ -98,7 +99,9 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
+  <script src="js/supabase.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>

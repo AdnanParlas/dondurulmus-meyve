@@ -1,48 +1,101 @@
 /* =============================================================
    YÖNETİM PANELİ
-   localStorage'daki lead'leri okur, istatistik gösterir,
-   CSV/JSON dışa aktarır. Şifre kapısı GERÇEK güvenlik değildir.
+   Supabase hesabıyla giriş yapılır, leadler merkezi veritabanından
+   okunur (tüm cihazlardan gelen kayıtlar). Supabase yoksa yerel
+   (localStorage) veriye düşer.
    ============================================================= */
 
 const STORAGE_KEY = "klup_leads";
-
-// --- şifre kapısı ---
 const gate = document.getElementById("gate");
 const admin = document.getElementById("admin");
+const pwErr = document.getElementById("pwErr");
+let CACHE = [];
 
-function tryLogin() {
-  const pw = document.getElementById("pw").value;
-  if (pw === CONFIG.ADMIN_PASSWORD) {
-    sessionStorage.setItem("klup_admin_ok", "1");
-    gate.hidden = true;
-    admin.hidden = false;
-    renderAll();
-  } else {
-    document.getElementById("pwErr").hidden = false;
+/* --- Giriş / oturum --- */
+async function tryLogin() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("pw").value;
+  pwErr.hidden = true;
+
+  if (!sb) { // Supabase yoksa yalnız yerel veriyle çalış
+    showPanel();
+    return;
   }
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) { pwErr.hidden = false; pwErr.textContent = "Giriş başarısız: " + error.message; return; }
+  showPanel();
 }
+
+async function logout() {
+  if (sb) { try { await sb.auth.signOut(); } catch (e) {} }
+  location.reload();
+}
+
+function showPanel() {
+  gate.hidden = true;
+  admin.hidden = false;
+  renderAll();
+}
+
 document.getElementById("loginBtn").addEventListener("click", tryLogin);
 document.getElementById("pw").addEventListener("keydown", e => { if (e.key === "Enter") tryLogin(); });
-if (sessionStorage.getItem("klup_admin_ok") === "1") {
-  gate.hidden = true; admin.hidden = false;
+document.getElementById("email").addEventListener("keydown", e => { if (e.key === "Enter") tryLogin(); });
+document.getElementById("logoutBtn").addEventListener("click", logout);
+
+// Mevcut oturum varsa direkt panele geç
+(async function () {
+  if (sb) {
+    try {
+      const { data } = await sb.auth.getSession();
+      if (data && data.session) showPanel();
+    } catch (e) {}
+  }
+})();
+
+/* --- Veri çekme --- */
+// Supabase satırını panelin beklediği şekle çevirir.
+function rowToLead(r) {
+  return {
+    createdAt: r.created_at,
+    refNo: r.ref_no,
+    group: r.group_type,
+    products: r.products || [],
+    tonnage: r.tonnage, budget: r.budget, timing: r.timing, experience: r.experience,
+    company: r.company, contact: r.contact, phone: r.phone, whatsapp: r.whatsapp,
+    email: r.email, location: r.location, port: r.port,
+    score: r.score, klass: r.klass, selectedSlot: r.selected_slot,
+  };
 }
 
-// --- veri ---
-function getLeads() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch (e) { return []; }
+async function loadLeads() {
+  const note = document.getElementById("sourceNote");
+  if (sb) {
+    const { data, error } = await sb.from("leads").select("*").order("created_at", { ascending: false });
+    if (error) {
+      note.innerHTML = "⚠️ Veritabanı okunamadı: " + error.message +
+        " — (leads tablosu oluşturuldu mu ve okuma izni verildi mi?)";
+      return [];
+    }
+    note.innerHTML = "✅ Merkezi veritabanı (Supabase) — tüm cihazlardan gelen <b>" +
+      data.length + "</b> lead. Yedek için CSV/JSON indirin.";
+    return data.map(rowToLead);
+  }
+  // yedek: localStorage
+  note.innerHTML = "ℹ️ Supabase bağlı değil; yalnızca bu tarayıcıdaki kayıtlar gösteriliyor.";
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) { return []; }
 }
 
-function renderAll() {
-  const leads = getLeads();
-  renderStats(leads);
-  renderClassDist(leads);
-  renderProductDist(leads);
-  renderFieldDist("distTonnage", leads, "tonnage", "Tonaj");
-  renderFieldDist("distBudget", leads, "budget", "Bütçe");
-  renderTable(leads);
+async function renderAll() {
+  CACHE = await loadLeads();
+  renderStats(CACHE);
+  renderClassDist(CACHE);
+  renderProductDist(CACHE);
+  renderFieldDist("distTonnage", CACHE, "tonnage");
+  renderFieldDist("distBudget", CACHE, "budget");
+  renderTable(CACHE);
 }
 
+/* --- İstatistikler --- */
 function renderStats(leads) {
   const total = leads.length;
   const hotVip = leads.filter(l => l.klass === "Sıcak Lead" || l.klass === "VIP Lead").length;
@@ -72,36 +125,31 @@ function distBars(containerId, pairs) {
 
 function renderClassDist(leads) {
   const order = ["VIP Lead", "Sıcak Lead", "Takip Edilecek Lead", "Düşük Lead"];
-  const counts = order.map(k => [k, leads.filter(l => l.klass === k).length]);
-  distBars("distClass", counts);
+  distBars("distClass", order.map(k => [k, leads.filter(l => l.klass === k).length]));
 }
-
 function renderProductDist(leads) {
   const map = {};
   leads.forEach(l => (l.products || []).forEach(p => { map[p] = (map[p] || 0) + 1; }));
-  const pairs = Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 15);
-  distBars("distProduct", pairs);
+  distBars("distProduct", Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 15));
 }
-
 function renderFieldDist(containerId, leads, field) {
   const map = {};
   leads.forEach(l => { const v = l[field] || "—"; map[v] = (map[v] || 0) + 1; });
-  const pairs = Object.entries(map).sort((a, b) => b[1] - a[1]);
-  distBars(containerId, pairs);
+  distBars(containerId, Object.entries(map).sort((a, b) => b[1] - a[1]));
 }
 
 function renderTable(leads) {
   const table = document.getElementById("leadTable");
   if (!leads.length) {
-    table.innerHTML = `<tr><td class="empty">Henüz lead yok. Ana sayfada bir form doldurun.</td></tr>`;
+    table.innerHTML = `<tr><td class="empty">Henüz lead yok.</td></tr>`;
     return;
   }
   const head = `<tr>
     <th>Tarih</th><th>Firma</th><th>Yetkili</th><th>Grup</th><th>Ürünler</th>
     <th>Tonaj</th><th>Bütçe</th><th>Zaman</th><th>Sınıf</th><th>Puan</th>
     <th>Telefon</th><th>E-posta</th><th>Toplantı</th></tr>`;
-  const rows = leads.slice().reverse().map(l => `<tr>
-    <td>${new Date(l.createdAt).toLocaleDateString("tr-TR")}</td>
+  const rows = leads.map(l => `<tr>
+    <td>${l.createdAt ? new Date(l.createdAt).toLocaleDateString("tr-TR") : "-"}</td>
     <td>${escapeHtml(l.company)}</td>
     <td>${escapeHtml(l.contact)}</td>
     <td>${escapeHtml(l.group)}</td>
@@ -110,7 +158,7 @@ function renderTable(leads) {
     <td>${escapeHtml(l.budget)}</td>
     <td>${escapeHtml(l.timing)}</td>
     <td><span class="lead-badge lead-${cssClass(l.klass)}">${escapeHtml(l.klass)}</span></td>
-    <td>${l.score}</td>
+    <td>${l.score == null ? "" : l.score}</td>
     <td>${escapeHtml(l.phone)}</td>
     <td>${escapeHtml(l.email)}</td>
     <td>${escapeHtml(l.selectedSlot || "-")}</td>
@@ -118,42 +166,31 @@ function renderTable(leads) {
   table.innerHTML = head + rows;
 }
 
-// --- dışa aktarma ---
-function exportJSON() {
-  download("leadler.json", JSON.stringify(getLeads(), null, 2), "application/json");
-}
+/* --- Dışa aktarma --- */
+function exportJSON() { download("leadler.json", JSON.stringify(CACHE, null, 2), "application/json"); }
 function exportCSV() {
-  const leads = getLeads();
   const cols = ["createdAt","refNo","company","contact","phone","whatsapp","email","location","port",
                 "group","products","tonnage","budget","timing","experience","klass","score","selectedSlot"];
-  const head = cols.join(",");
-  const rows = leads.map(l => cols.map(c => {
+  const rows = CACHE.map(l => cols.map(c => {
     let v = l[c];
     if (Array.isArray(v)) v = v.join(" | ");
     return `"${String(v == null ? "" : v).replace(/"/g, '""')}"`;
   }).join(","));
-  download("leadler.csv", "﻿" + [head, ...rows].join("\r\n"), "text/csv");
+  download("leadler.csv", "﻿" + [cols.join(","), ...rows].join("\r\n"), "text/csv");
 }
 function download(name, content, type) {
   const blob = new Blob([content], { type });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = name;
-  a.click();
+  a.download = name; a.click();
   URL.revokeObjectURL(a.href);
 }
 
 document.getElementById("exportCsv").addEventListener("click", exportCSV);
 document.getElementById("exportJson").addEventListener("click", exportJSON);
 document.getElementById("refresh").addEventListener("click", renderAll);
-document.getElementById("clear").addEventListener("click", () => {
-  if (confirm("Tüm lead verileri bu tarayıcıdan silinecek. Emin misiniz? (Önce dışa aktarmanız önerilir.)")) {
-    localStorage.removeItem(STORAGE_KEY);
-    renderAll();
-  }
-});
 
-// --- yardımcılar ---
+/* --- yardımcılar --- */
 function escapeHtml(s) {
   return String(s == null ? "" : s)
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
@@ -161,6 +198,3 @@ function escapeHtml(s) {
 function cssClass(klass) {
   return { "VIP Lead":"vip","Sıcak Lead":"hot","Takip Edilecek Lead":"follow","Düşük Lead":"low" }[klass] || "low";
 }
-
-// İlk açılışta panel görünürse doldur
-if (!admin.hidden) renderAll();

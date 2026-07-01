@@ -125,6 +125,8 @@ function saveLead(p) {
   try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) {}
   leads.push(p);
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(leads)); } catch (e) {}
+  // Merkezi veritabanına da yaz (varsa)
+  if (typeof sbInsertLead === "function") sbInsertLead(p);
 }
 
 /* Kayıtlı lead'i refNo'ya göre günceller (ör. toplantı saati seçilince). */
@@ -133,4 +135,5 @@ function updateLead(p) {
   try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) {}
   const i = leads.findIndex(l => l.refNo === p.refNo);
   if (i >= 0) { leads[i] = p; try { localStorage.setItem(STORAGE_KEY, JSON.stringify(leads)); } catch (e) {} }
+  if (typeof sbUpdateSlot === "function") sbUpdateSlot(p);
 }

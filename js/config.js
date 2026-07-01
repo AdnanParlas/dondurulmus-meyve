@@ -19,10 +19,14 @@ const CONFIG = {
     experienceYears: 27,
   },
 
-  /* --- Admin paneli şifresi ---
-     NOT: Bu GERÇEK güvenlik değildir (kod tarayıcıda görülebilir).
-     Sadece paneli rastgele kişilerden gizlemek içindir. */
-  ADMIN_PASSWORD: "klup2026",
+  /* --- Supabase (merkezi lead veritabanı) ---
+     Site formu buraya YAZAR (insert). Admin paneli buradan OKUR (giriş sonrası).
+     publishable (public) anahtar tarayıcıda kullanılmak için güvenlidir. */
+  SUPABASE_URL: "https://amaejlvxbbnedawtqogy.supabase.co",
+  SUPABASE_KEY: "sb_publishable_0ucM4ITFUiaZ-_scNUTJgQ_U4Y7tn-I",
+
+  /* Admin paneline giriş artık Supabase hesabınla (e-posta + şifre) yapılır.
+     Bu kullanıcıyı Supabase → Authentication → Users → Add user ile oluşturursun. */
 
   /* --- Müsait toplantı saatleri (yalnız Sıcak/VIP leadlere gösterilir) ---
      label: ekranda görünen yazı.  day: 0=Pazar ... 1=Pzt ... 6=Cmt.  time: "SS:DD" */
