@@ -48,7 +48,7 @@ const CONFIG = {
     // altı -> Düşük Lead
   },
   // Hangi sınıflara toplantı ekranı açılsın:
-  MEETING_FOR_CLASSES: ["VIP Lead", "Sıcak Lead"],
+  MEETING_FOR_CLASSES: ["VIP Lead", "Sıcak Lead", "Takip Edilecek Lead"],
 
   /* --- Grup (tonaj) bazlı ÖN FİYAT aralıkları ---
      NOT: Bunlar PLACEHOLDER (örnek) değerlerdir, gerçek rakamlarınızı yazın.
