@@ -49,13 +49,13 @@ drop policy if exists "site can update recent slot" on public.leads;
 drop policy if exists "owner can read leads" on public.leads;
 drop policy if exists "owner can update leads" on public.leads;
 
--- Site ziyaretçisi YENİ lead ekleyebilir (okuyamaz)
+-- Site formu YENİ lead ekleyebilir (hem ziyaretçi hem giriş yapmış admin aynı tarayıcıda test edebilsin)
 create policy "site can insert leads"
-  on public.leads for insert to anon with check (true);
+  on public.leads for insert to anon, authenticated with check (true);
 
--- Ziyaretçi yalnız kendi yeni kaydının toplantı/süreç bilgisini güncelleyebilir (son 2 saat)
+-- Yeni kaydın toplantı/süreç bilgisini güncelleyebilir (son 2 saat)
 create policy "site can update recent slot"
-  on public.leads for update to anon
+  on public.leads for update to anon, authenticated
   using (created_at > now() - interval '2 hours') with check (true);
 
 -- Sadece SEN (giriş yapan) leadleri OKUyabilirsin
