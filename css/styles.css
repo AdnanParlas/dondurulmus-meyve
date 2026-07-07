@@ -333,7 +333,7 @@ body {
 
 .actions { display: grid; grid-template-columns: 1fr; gap: 10px; }
 .actions--single { grid-template-columns: 1fr; }
-.btn--wa { font-size: 1.05rem; padding: 16px 22px; }
+.btn--wa { font-size: 1.05rem; padding: 16px 22px; text-align: center; }
 
 /* meeting */
 .meeting, .meeting-note { margin-top: 22px; }
