@@ -120,25 +120,17 @@ body {
 }
 .btn:active { transform: translateY(1px); }
 .btn--cta {
-  position: relative;
   background: var(--orange);
   color: #111;
   font-size: 1.15rem;
-  padding: 16px 52px;
+  padding: 16px 34px;
   box-shadow: 0 10px 24px rgba(242,106,27,.35);
   justify-content: center;
-  text-align: center;
+  gap: 10px;
 }
 .btn--cta:hover { background: var(--orange-dark); }
-/* El solda (halka yok) */
-.cta-ico {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.7rem;
-  line-height: 1;
-}
+/* El, yazının hemen yanında ve büyük/belirgin */
+.cta-ico { font-size: 2rem; line-height: 1; }
 .btn--next {
   background: var(--orange);
   color: #111;
