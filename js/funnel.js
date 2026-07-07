@@ -291,7 +291,7 @@ function ensureNextButton(wrap, enabled, label = "Devam →") {
 // --- Final: ön teklif oluştur ---
 function finish() {
   els.progress.style.width = "100%";
-  els.counter.textContent = "Ön teklifiniz hazır 🎉";
+  els.counter.textContent = "Talebiniz alındı";
   els.back.hidden = true;
   const p = buildProposal(state);
   window._lastProposal = p;
