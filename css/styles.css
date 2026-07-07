@@ -123,16 +123,18 @@ body {
   background: var(--orange);
   color: #111;
   font-size: 1.15rem;
-  padding: 16px 34px;
+  padding: 16px 52px 16px 24px;
   box-shadow: 0 10px 24px rgba(242,106,27,.35);
   justify-content: center;
   gap: 7px;
 }
 .btn--cta:hover { background: var(--orange-dark); }
-/* El, yazının hemen yanında; daha tombul ve çizgileri belirgin */
+/* El, yazının hemen yanında; yanlardan daraltılıp tombullaştırıldı, çizgiler belirgin */
 .cta-ico {
   font-size: 2.35rem;
   line-height: 1;
+  display: inline-block;
+  transform: scaleX(0.82);
   filter: contrast(1.25) saturate(1.1) drop-shadow(0 1px 1px rgba(0,0,0,.4));
 }
 .btn--next {
