@@ -154,7 +154,16 @@ body {
 .btn--wa   { background: #25D366; color: #111; }
 .btn--cal  { background: var(--ink); color: #fff; margin-top: 14px; }
 .btn--wa:hover { filter: brightness(1.05); }
-.wa-ico { width: 27px; height: 27px; flex-shrink: 0; }
+/* Yazı yeşilin tam ortasında (gerekirse 2 satır); logo butonun solunda (mutlak) */
+.wa-txt { display: inline-block; max-width: calc(100% - 104px); line-height: 1.25; }
+.wa-ico {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+}
 
 /* ---------------- FUNNEL ---------------- */
 .funnel {
@@ -344,7 +353,7 @@ body {
 
 .actions { display: grid; grid-template-columns: 1fr; gap: 10px; }
 .actions--single { grid-template-columns: 1fr; }
-.btn--wa { font-size: 1.05rem; padding: 16px 22px; text-align: center; }
+.btn--wa { position: relative; font-size: 1.05rem; padding: 16px 22px; text-align: center; }
 
 /* meeting */
 .meeting, .meeting-note { margin-top: 22px; }
