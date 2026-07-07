@@ -330,9 +330,9 @@ function renderProposal(p) {
 
     <div class="info-box">✅ ${esc(p.message)}</div>
 
-    ${waBtnHtml ? `<div class="actions actions--single">${waBtnHtml}</div>` : ""}
-
     <div id="meetingArea"></div>
+
+    ${waBtnHtml ? `<div class="actions actions--single" style="margin-top:16px">${waBtnHtml}</div>` : ""}
   `;
   c.appendChild(card);
 
