@@ -144,21 +144,21 @@ body {
 }
 .btn--next {
   background: var(--orange);
-  color: #111;
+  color: #fff;
   margin-top: 22px;
   width: 100%;
 }
 .btn--next:hover { background: var(--orange-dark); }
 .btn--next:disabled { background: #f3b48c; cursor: not-allowed; }
 
-.btn--wa   { background: #25D366; color: #111; }
+.btn--wa   { background: #25D366; color: #fff; }
 .btn--cal  { background: var(--ink); color: #fff; margin-top: 14px; }
 .btn--wa:hover { filter: brightness(1.05); }
 /* Yazı yeşilin tam ortasında (gerekirse 2 satır); logo butonun solunda (mutlak) */
 .wa-txt { display: inline-block; max-width: calc(100% - 104px); line-height: 1.25; }
 .wa-ico {
   position: absolute;
-  left: 72px;
+  left: 20px;
   top: 50%;
   transform: translateY(-50%);
   width: 32px;
@@ -258,7 +258,7 @@ body {
 .link-back {
   background: var(--orange-soft);
   border: 2px solid #ffd0ac;
-  color: var(--orange-dark);
+  color: #111;
   cursor: pointer;
   font-weight: 700;
   font-size: 1rem;

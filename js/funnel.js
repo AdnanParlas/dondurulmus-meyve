@@ -118,7 +118,7 @@ function renderGroup() {
   wrap.innerHTML = `<h2 class="step__q">Hangi ürün grubu ile ilgileniyorsunuz?</h2>`;
   const grid = document.createElement("div");
   grid.className = "choice-grid choice-grid--3";
-  [["meyve","🍓 Meyve"],["sebze","🥦 Sebze"],["her ikisi","🍱 Her ikisi"]].forEach(([val,label]) => {
+  [["meyve","🍓 Meyve"],["sebze","🥦 Sebze"],["deniz","🐟 Deniz ürünleri"],["bakliyat","🫘 Bakliyat"],["hepsi","🧺 Hepsi"]].forEach(([val,label]) => {
     const b = document.createElement("button");
     b.className = "choice choice--big" + (state.group === val ? " is-active" : "");
     b.innerHTML = label;
@@ -165,6 +165,8 @@ function renderProducts() {
   let pool = PRODUCTS;
   if (state.group === "meyve") pool = PRODUCTS.filter(p => p.type === "meyve");
   else if (state.group === "sebze") pool = PRODUCTS.filter(p => p.type === "sebze");
+  else if (state.group === "deniz") pool = PRODUCTS.filter(p => p.type === "deniz");
+  else if (state.group === "bakliyat") pool = PRODUCTS.filter(p => p.type === "bakliyat");
   const known = pool.map(p => p.name);
 
   const eq = (a, b) => a.toLocaleLowerCase("tr") === b.toLocaleLowerCase("tr");

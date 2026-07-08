@@ -29,6 +29,22 @@ const PRODUCTS = [
   { name: "Sarımsak",         type: "sebze" },
   { name: "Fasulye",          type: "sebze" },
   { name: "Ispanak",          type: "sebze" },
+  // Deniz ürünleri
+  { name: "Somon",            type: "deniz" },
+  { name: "Karides",          type: "deniz" },
+  { name: "Levrek",           type: "deniz" },
+  { name: "Çipura",           type: "deniz" },
+  { name: "Kalamar",          type: "deniz" },
+  { name: "Ahtapot",          type: "deniz" },
+  { name: "Midye",            type: "deniz" },
+  { name: "Beyaz balık",      type: "deniz" },
+  // Bakliyat
+  { name: "Nohut",            type: "bakliyat" },
+  { name: "Kırmızı mercimek", type: "bakliyat" },
+  { name: "Yeşil mercimek",   type: "bakliyat" },
+  { name: "Kuru fasulye",     type: "bakliyat" },
+  { name: "Barbunya",         type: "bakliyat" },
+  { name: "Börülce",          type: "bakliyat" },
 ];
 
 /* Türkçe karakterleri sadeleştirip küçük harfe çevirir.
@@ -54,7 +70,9 @@ function suggestProducts(query, groupFilter) {
   let pool = PRODUCTS;
   if (groupFilter === "meyve") pool = PRODUCTS.filter(p => p.type === "meyve");
   else if (groupFilter === "sebze") pool = PRODUCTS.filter(p => p.type === "sebze");
-  // "her ikisi" -> hepsi
+  else if (groupFilter === "deniz") pool = PRODUCTS.filter(p => p.type === "deniz");
+  else if (groupFilter === "bakliyat") pool = PRODUCTS.filter(p => p.type === "bakliyat");
+  // "hepsi" -> hepsi
 
   const starts = [];
   const contains = [];
