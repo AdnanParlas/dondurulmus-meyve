@@ -158,11 +158,57 @@ body {
 .wa-txt { display: inline-block; max-width: calc(100% - 104px); line-height: 1.25; }
 .wa-ico {
   position: absolute;
-  left: 18px;
+  left: 72px;
   top: 50%;
   transform: translateY(-50%);
   width: 32px;
   height: 32px;
+}
+
+/* ---------------- ANA SAYFA (poster) ---------------- */
+.home {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+.poster {
+  position: relative;
+  width: 100%;
+  max-width: 881px;            /* orijinal görsel genişliği — büyütme/küçültme yok */
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.poster__img { display: block; width: 100%; height: auto; }
+/* yalnızca "Hemen Teklif Al" butonu tıklanabilir (görseldeki konum, yüzde bazlı) */
+.poster__cta {
+  position: absolute;
+  left: 10%;
+  top: 92.6%;
+  width: 80%;
+  height: 5%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  border-radius: 12px;
+  -webkit-tap-highlight-color: transparent;
+  transition: box-shadow .2s ease, transform .12s ease;
+}
+.poster__cta:hover {
+  box-shadow: 0 0 0 3px rgba(242,106,27,.9), 0 10px 26px -8px rgba(242,106,27,.55);
+}
+.poster__cta:active { transform: translateY(1px); }
+.poster__cta:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  .poster__cta { animation: ctapulse 1.9s ease 1.2s 2; }
+  @keyframes ctapulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(242,106,27,0); }
+    50%      { box-shadow: 0 0 0 3px rgba(242,106,27,.85), 0 8px 22px -6px rgba(242,106,27,.5); }
+  }
 }
 
 /* ---------------- FUNNEL ---------------- */
