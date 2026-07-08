@@ -168,20 +168,29 @@ body {
 /* ---------------- ANA SAYFA (poster) ---------------- */
 .home {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px 16px;
+  padding: 10px;
 }
 .poster {
   position: relative;
-  width: 100%;
-  max-width: 881px;            /* orijinal görsel genişliği — büyütme/küçültme yok */
+  max-width: 100%;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: var(--shadow);
+  font-size: 0;                /* satır içi boşluğu kaldır */
 }
-.poster__img { display: block; width: 100%; height: auto; }
+/* Poster ekrana tam sığar (oranlar korunur; buton dahil hepsi ilk açılışta görünür) */
+.poster__img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(calc(100vw - 20px), 881px);
+  max-height: calc(100vh - 20px);
+  max-height: calc(100dvh - 20px);
+}
 /* yalnızca "Hemen Teklif Al" butonu tıklanabilir (görseldeki konum, yüzde bazlı) */
 .poster__cta {
   position: absolute;
