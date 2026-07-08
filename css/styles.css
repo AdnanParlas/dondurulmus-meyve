@@ -191,10 +191,24 @@ body {
   max-height: calc(100vh - 20px);
   max-height: calc(100dvh - 20px);
 }
-/* Masaüstü / geniş ekran: poster daha büyük dursun (gerekirse dikey kaydırma) */
+/* Masaüstü / geniş ekran: ekranı doldur — yanlar posterin bulanık uzantısıyla dolar */
 @media (min-width: 768px) {
-  .home { align-items: flex-start; padding: 28px 20px 40px; }
-  .poster__img { max-width: 680px; max-height: none; }
+  .home { position: relative; overflow: hidden; align-items: center; padding: 20px; }
+  .home::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("../assets/anasayfa.jpg") center / cover no-repeat;
+    filter: blur(32px) brightness(.9) saturate(1.05);
+    transform: scale(1.2);
+    z-index: 0;
+  }
+  .poster { z-index: 1; }
+  .poster__img {
+    max-width: min(calc(100vw - 40px), 881px);
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
+  }
 }
 /* yalnızca "Hemen Teklif Al" butonu tıklanabilir (görseldeki konum, yüzde bazlı) */
 .poster__cta {
