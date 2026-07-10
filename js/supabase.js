@@ -69,20 +69,16 @@ async function sbUpdateSlot(p) {
   const client = sbAnon || sb;
   if (!client) return { conflict: false };
   try {
-    let { error } = await client.from("leads")
-      .update({ selected_slot: p.selectedSlot, slot_key: p.slotKey || null, status: "Toplantı planlandı" })
+    // Güvenli fonksiyon: RLS'yi aşarak rezervasyonu yazar + slotu atomik kontrol eder.
+    // Dönüş: "ok" (yazıldı) | "taken" (o saat az önce alınmış).
+    const { data, error } = await client.rpc("reserve_slot", {
+      p_ref: p.refNo, p_slot_key: p.slotKey || null, p_selected_slot: p.selectedSlot || null,
+    });
+    if (!error) return { conflict: data === "taken" };
+    // reserve_slot henüz eklenmemişse (kurulum güncellenmemiş) eski yönteme düş
+    await client.from("leads")
+      .update({ selected_slot: p.selectedSlot, slot_key: p.slotKey || null })
       .eq("ref_no", p.refNo);
-    if (error && /column|schema cache|PGRST204/i.test(error.message + (error.code || ""))) {
-      ({ error } = await client.from("leads")
-        .update({ selected_slot: p.selectedSlot, status: "Toplantı planlandı" })
-        .eq("ref_no", p.refNo));
-    }
-    if (error) {
-      // Aynı slot_key başkası tarafından alınmışsa tekil (unique) kısıt ihlali -> çakışma
-      const conflict = /duplicate key|unique|23505/i.test(error.message + (error.code || ""));
-      if (!conflict) console.warn("Supabase update hata:", error.message);
-      return { conflict, error: error.message };
-    }
     return { conflict: false };
   } catch (e) { console.warn("Supabase update exception:", e); return { conflict: false }; }
 }
