@@ -141,3 +141,21 @@ async function sbAdminDelete(id) {
     return { error: null };
   } catch (e) { return { error: String(e) }; }
 }
+
+// ADMIN: birden fazla lead siler (çoklu seçim). 40'lık gruplar hâlinde gider,
+// aksi halde uzun id listesi URL sınırını aşar.
+// Dönüş: { deleted, error }. Hiç satır silinmediyse error === "rls".
+async function sbAdminDeleteMany(ids) {
+  if (!sb) return { deleted: 0, error: "Supabase yok" };
+  let deleted = 0;
+  try {
+    for (let i = 0; i < ids.length; i += 40) {
+      const batch = ids.slice(i, i + 40);
+      const { data, error } = await sb.from("leads").delete().in("id", batch).select("id");
+      if (error) return { deleted, error: error.message };
+      deleted += (data || []).length;
+    }
+    if (!deleted && ids.length) return { deleted: 0, error: "rls" };
+    return { deleted, error: null };
+  } catch (e) { return { deleted, error: String(e) }; }
+}

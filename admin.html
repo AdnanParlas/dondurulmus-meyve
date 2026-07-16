@@ -36,6 +36,16 @@
     .btn--danger { background: #c0392b; color: #fff; }
     .empty { text-align: center; color: var(--muted); padding: 30px; }
 
+    /* Çoklu seçim çubuğu */
+    .bulk-bar {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      background: #fdeeec; border: 1px solid #e9b4ad; border-radius: 10px;
+      padding: 10px 14px; margin: 0 0 12px;
+    }
+    .bulk-bar b { color: #a3342a; font-size: .9rem; }
+    .c-sel { width: 34px; padding-right: 0; }
+    .c-sel input { width: 16px; height: 16px; cursor: pointer; accent-color: #c0392b; }
+
     /* Satır silme butonu */
     .row-del {
       background: transparent; border: 1px solid var(--line); border-radius: 8px;
@@ -237,7 +247,12 @@
       <div class="filters" id="filters"></div>
       <p class="flabel-lbl">Aksiyon</p>
       <div class="filters" id="actionFilters"></div>
-      <p class="row-hint">👉 Detay, durum, aksiyon, not ve takip tarihi için bir satıra tıklayın.</p>
+      <p class="row-hint">👉 Detay, durum, aksiyon, not ve takip tarihi için bir satıra tıklayın. Toplu silmek için soldaki kutuları işaretleyin.</p>
+      <div class="bulk-bar" id="bulkBar" hidden>
+        <b id="bulkCount">0 lead seçildi</b>
+        <button class="btn--sm btn--danger" id="bulkDel">🗑️ Seçilenleri sil</button>
+        <button class="btn--sm btn--ghost" id="bulkClear">Seçimi temizle</button>
+      </div>
       <div class="table-wrap"><table id="leadTable"></table></div>
     </div>
   </div>
@@ -258,7 +273,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js?v=19"></script>
-  <script src="js/supabase.js?v=24"></script>
-  <script src="js/admin.js?v=43"></script>
+  <script src="js/supabase.js?v=25"></script>
+  <script src="js/admin.js?v=44"></script>
 </body>
 </html>

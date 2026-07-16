@@ -12,6 +12,17 @@ const pwErr = document.getElementById("pwErr");
 let CACHE = [];
 let activeStatus = "Tümü";
 let activeAction = "Tüm aksiyonlar";
+let SELECTED = new Set();   // çoklu seçim: lead anahtarları (Supabase'de id, yereldeyse refNo)
+
+// Supabase kaydında id, localStorage yedeğinde refNo tekil anahtardır.
+const leadKey = l => (l.id != null ? l.id : l.refNo);
+
+const RLS_UYARI =
+  "Silinemedi — 0 satır etkilendi.\n\n" +
+  "Supabase'de leads tablosu için DELETE politikası tanımlı değil, " +
+  "bu yüzden silme isteği sessizce reddediliyor.\n\n" +
+  "Çözüm: Supabase → SQL Editor'de DELETE politikasını ekle " +
+  "(SUPABASE-KURULUM.md içindeki SQL).";
 
 // Lead durumları (yeni CRM akışı)
 const STATUSES = [
@@ -122,6 +133,9 @@ async function loadLeads() {
 
 async function renderAll() {
   CACHE = await loadLeads();
+  // Artık var olmayan (silinmiş) leadler seçimde asılı kalmasın
+  const mevcut = new Set(CACHE.map(leadKey));
+  SELECTED.forEach(k => { if (!mevcut.has(k)) SELECTED.delete(k); });
   renderStats(CACHE);
   renderStatusDist(CACHE);
   renderClassDist(CACHE);
@@ -229,12 +243,16 @@ function renderTable(leads) {
   const table = document.getElementById("leadTable");
   if (!leads.length) {
     table.innerHTML = `<tr><td class="empty">Bu filtrede lead yok.</td></tr>`;
+    updateBulkBar(leads);   // çubuk eski sayıyla asılı kalmasın
     return;
   }
   const head = `<tr>
+    <th class="c-sel"><input type="checkbox" id="selAll" title="Görünen tümünü seç" aria-label="Görünen tümünü seç"></th>
     <th>Tarih</th><th>Firma</th><th>Tonaj</th><th>Sınıf</th>
     <th>Durum</th><th>Sonraki takip</th><th>Telefon</th><th>Sil</th></tr>`;
   const rows = leads.map((l, idx) => `<tr class="clickable" data-idx="${idx}">
+    <td class="c-sel" data-label="Seç"><input type="checkbox" class="row-sel" data-idx="${idx}"
+      ${SELECTED.has(leadKey(l)) ? "checked" : ""} aria-label="Bu lead'i seç"></td>
     <td data-label="Tarih">${l.createdAt ? new Date(l.createdAt).toLocaleDateString("tr-TR") : "-"}</td>
     <td data-label="Firma">${escapeHtml(l.company)}</td>
     <td data-label="Tonaj">${escapeHtml(l.tonnage)}</td>
@@ -252,6 +270,65 @@ function renderTable(leads) {
     // Satır tıklaması kartı açıyor; silme butonu onu tetiklemesin.
     b.addEventListener("click", e => { e.stopPropagation(); deleteLead(leads[+b.dataset.idx], b); });
   });
+  table.querySelectorAll(".row-sel").forEach(c => {
+    c.addEventListener("click", e => e.stopPropagation()); // kart açılmasın
+    c.addEventListener("change", e => {
+      const k = leadKey(leads[+c.dataset.idx]);
+      e.target.checked ? SELECTED.add(k) : SELECTED.delete(k);
+      updateBulkBar(leads);
+    });
+  });
+  const all = document.getElementById("selAll");
+  if (all) all.addEventListener("change", e => {
+    leads.forEach(l => e.target.checked ? SELECTED.add(leadKey(l)) : SELECTED.delete(leadKey(l)));
+    renderTable(leads);
+  });
+  updateBulkBar(leads);
+}
+
+/* --- Çoklu seçim çubuğu --- */
+function updateBulkBar(leads) {
+  const bar = document.getElementById("bulkBar");
+  if (!bar) return;
+  bar.hidden = SELECTED.size === 0;
+  const cnt = document.getElementById("bulkCount");
+  if (cnt) cnt.textContent = SELECTED.size + " lead seçildi";
+
+  // Başlık kutusu: görünenlerin hepsi seçiliyse dolu, bir kısmıysa karışık
+  const all = document.getElementById("selAll");
+  if (all) {
+    const secili = leads.filter(l => SELECTED.has(leadKey(l))).length;
+    all.checked = leads.length > 0 && secili === leads.length;
+    all.indeterminate = secili > 0 && secili < leads.length;
+  }
+}
+
+/* --- Seçilenleri toplu sil --- */
+async function bulkDelete() {
+  const keys = [...SELECTED];
+  if (!keys.length) return;
+  if (!confirm(`${keys.length} lead silinecek.\n\nBu işlem geri alınamaz. Emin misiniz?`)) return;
+
+  const btn = document.getElementById("bulkDel");
+  const eski = btn.textContent;
+  btn.disabled = true; btn.textContent = "Siliniyor…";
+
+  if (sb) {
+    const res = await sbAdminDeleteMany(keys);
+    if (res.error === "rls") { alert(RLS_UYARI); btn.disabled = false; btn.textContent = eski; return; }
+    if (res.error) {
+      alert("Silinemedi: " + res.error + (res.deleted ? `\n\n${res.deleted} lead silindikten sonra durdu.` : ""));
+    }
+  } else {
+    try {
+      const arr = (JSON.parse(localStorage.getItem(STORAGE_KEY)) || []).filter(l => !SELECTED.has(l.refNo));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    } catch (e) { alert("Silinemedi: " + e); }
+  }
+
+  SELECTED.clear();
+  btn.disabled = false; btn.textContent = eski;
+  await renderAll();
 }
 
 /* --- Lead silme (satır butonu) --- */
@@ -265,13 +342,7 @@ async function deleteLead(lead, btn) {
   if (sb && lead.id) {
     const res = await sbAdminDelete(lead.id);
     if (res.error === "rls") {
-      alert(
-        "Silinemedi — 0 satır etkilendi.\n\n" +
-        "Supabase'de leads tablosu için DELETE politikası tanımlı değil, " +
-        "bu yüzden silme isteği sessizce reddediliyor.\n\n" +
-        "Çözüm: Supabase → SQL Editor'de DELETE politikasını ekle " +
-        "(SUPABASE-KURULUM.md içindeki SQL)."
-      );
+      alert(RLS_UYARI);
       btn.disabled = false; btn.textContent = eski; return;
     }
     if (res.error) {
@@ -420,6 +491,10 @@ function download(name, content, type) {
   a.download = name; a.click();
   URL.revokeObjectURL(a.href);
 }
+document.getElementById("bulkDel").addEventListener("click", bulkDelete);
+document.getElementById("bulkClear").addEventListener("click", () => {
+  SELECTED.clear(); renderTable(getFiltered());
+});
 document.getElementById("exportCsv").addEventListener("click", exportCSV);
 document.getElementById("exportJson").addEventListener("click", exportJSON);
 document.getElementById("refresh").addEventListener("click", renderAll);
