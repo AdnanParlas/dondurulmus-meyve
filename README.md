@@ -35,7 +35,7 @@ SUPABASE-KURULUM.md  Veritabanı kurulum rehberi (SQL)
 
 ## Ayarları değiştirme (`js/config.js`)
 Sadece bu dosyayı düzenlemeniz yeterli:
-- `WHATSAPP` — numaranız (ülke kodu + numara, başında `+` ve `0` olmadan). Örn: `0532 653 40 05` → `905326534005`
+- `WHATSAPP` — numaranız (ülke kodu + numara, başında `+` ve `0` olmadan). Örn: `0532 051 44 08` → `905320514408`
 - `EMAIL` — e-posta adresiniz
 - `SUPABASE_URL` / `SUPABASE_KEY` — merkezi veritabanı (publishable key)
 - `MEETING_SLOTS` — müsait toplantı gün/saatleri

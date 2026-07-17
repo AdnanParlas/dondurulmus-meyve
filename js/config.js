@@ -8,8 +8,8 @@
 const CONFIG = {
   /* --- İletişim --- */
   // WhatsApp numarası: ülke kodu + numara, başında + ve 0 OLMADAN.
-  // Örn: Türkiye 0532 653 40 05  ->  "905326534005"
-  WHATSAPP: "905326534005",
+  // Örn: Türkiye 0532 051 44 08  ->  "905320514408"
+  WHATSAPP: "905320514408",
   EMAIL: "adnanparlas35@hotmail.com",
 
   // Firma / marka bilgisi (hero ve PDF'te görünür)
