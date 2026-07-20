@@ -39,14 +39,21 @@ function trackStep(step, index) {
                  : (typeof sb !== "undefined" && sb) ? sb : null;
     if (!client) return;
 
-    // upsert + ignoreDuplicates: aynı oturumda aynı adım tekrar yazılmaz
-    // (sayfa yenilense bile sayaç şişmez; benzersiz indeks bunu garantiler)
+    // DÜZ insert kullanılır, upsert DEĞİL.
+    // Sebep: PostgREST'te upsert "INSERT ... ON CONFLICT" demektir ve
+    // INSERT'e ek olarak UPDATE politikası ister. Ziyaretçiye UPDATE yetkisi
+    // vermek istemiyoruz (satırları değiştirebilirdi), o yüzden düz insert
+    // atıp benzersiz indeksin ürettiği çakışma hatasını sessizce yutuyoruz.
     client.from("funnel_events")
-      .upsert({ session_id: trackSession(), step: step, step_index: index },
-              { onConflict: "session_id,step", ignoreDuplicates: true })
+      .insert({ session_id: trackSession(), step: step, step_index: index })
       .then(res => {
         if (!res || !res.error) return;
         const m = res.error.message || "";
+        const kod = res.error.code || "";
+
+        // Aynı oturum + aynı adım zaten yazılmış (sayfa yenilenmiş) -> normal, sessiz geç
+        if (kod === "23505" || /duplicate key|already exists/i.test(m)) return;
+
         // Tablo henüz kurulmamış -> bu oturumda bir daha deneme
         if (/does not exist|schema cache|PGRST205/i.test(m)) {
           _trackKapali = true;
