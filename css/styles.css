@@ -191,26 +191,19 @@ body {
   gap: 14px;
   flex-wrap: wrap;          /* dar ekranda rozet alt satıra insin, taşmasın */
 }
-/* 27 yıllık tecrübe: sayfanın en üstünde, girer girmez görünsün */
+/* Şirketin "27 Yıllık Tecrübe" arması: sayfanın en üstünde, girer girmez
+   görünsün. Armanın iç dolgusu koyu lacivert, dış çerçevesi altın; siyah
+   zeminde çerçeve ve "27" okunuyor, dolgu barla kaynaşıyor. */
 .lp-top__badge {
   margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px 6px 10px;
-  border: 1px solid rgba(232,189,109,.5);
-  border-radius: 999px;
-  background: rgba(232,189,109,.13);
-  color: #f2dcb4;
-  font-size: clamp(12.5px, 2.2vw, 14.5px);
-  font-weight: 700;
-  letter-spacing: .3px;
-  white-space: nowrap;
+  display: block;
+  height: clamp(50px, 10vw, 62px);
+  width: auto;
+  flex: none;
 }
-.lp-top__badge svg { width: 26px; height: 26px; flex: none; }
 .lp-top__logo {
   display: block;
-  height: clamp(42px, 9vw, 50px);
+  height: clamp(54px, 11.5vw, 68px);
   width: auto;
   flex: none;
 }
@@ -404,8 +397,6 @@ body {
   .lp-cats   { grid-template-columns: repeat(2, 1fr); }
   .lp-trust  { grid-template-columns: 1fr; }
   .lp-trust li { flex-direction: row; text-align: left; padding: 14px 16px; }
-  /* rozet alt satıra indiğinde sağa yapışmasın, adla hizalansın */
-  .lp-top__badge { margin-left: 0; }
 }
 
 /* ---------------- FUNNEL ---------------- */
