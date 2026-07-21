@@ -6,33 +6,134 @@
   <title>Dondurulmuş Meyve & Sebze İthalatı — Ön Teklif Al</title>
   <meta name="description" content="Dondurulmuş meyve ve sebze ithalatı için hızlı ön teklif. Toptan tedarik, kalite kontrol, soğuk zincir, zamanında teslimat." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍓</text></svg>" />
-  <link rel="stylesheet" href="css/styles.css?v=40" />
-  <!-- Poster ilk ekranın tamamı: en yüksek öncelikle indir -->
-  <link rel="preload" as="image" href="assets/anasayfa.webp?v=1" type="image/webp" fetchpriority="high" />
+  <link rel="stylesheet" href="css/styles.css?v=41" />
+  <!-- Görsel artık ilk ekranın tamamı değil, yalnızca ürün kartlarının fotoğrafı.
+       Başlık metni hemen çizildiği için en yüksek öncelik gerekmiyor. -->
+  <link rel="preload" as="image" href="assets/anasayfa.webp?v=1" type="image/webp" />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 </head>
 <body>
 
-  <!-- ===================== ANA SAYFA (poster) ===================== -->
-  <header class="home" id="hero">
-    <div class="poster">
-      <picture>
-        <source srcset="assets/anasayfa.webp?v=1" type="image/webp" />
-        <img class="poster__img" src="assets/anasayfa.jpg?v=2"
-           width="881" height="1664" fetchpriority="high"
-           alt="Klüp Dış Ticaret — Dondurulmuş meyve, sebze, deniz ürünleri ve bakliyat için ön teklif alın. Güvenilir tedarik, kalite kontrol, zamanında teslimat, -18°C soğuk zincir, 27 yıllık tecrübe." />
-      </picture>
-      <button class="poster__cta" id="startBtn" type="button"
-              aria-label="Hemen Teklif Al — ön teklif sürecini başlat"></button>
+  <!-- ===================== ANA SAYFA ===================== -->
+  <header class="lp" id="hero">
+
+    <div class="lp-top">
+      <div class="lp-top__in">
+        <svg class="lp-top__globe" viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="24" cy="24" r="21" fill="#12408f"/>
+          <ellipse cx="24" cy="24" rx="21" ry="8"  fill="none" stroke="#5b9bef" stroke-width="1.2" opacity=".85"/>
+          <ellipse cx="24" cy="24" rx="9"  ry="21" fill="none" stroke="#5b9bef" stroke-width="1.2" opacity=".85"/>
+          <path d="M3 24h42" stroke="#5b9bef" stroke-width="1.2" opacity=".85"/>
+          <path d="M15 13c4 2 5 5 9 5s6-3 9-1-1 6-4 7-9-1-11 2 3 6 2 9" fill="none" stroke="#7fd18c" stroke-width="2.4" stroke-linecap="round" opacity=".95"/>
+          <circle cx="24" cy="24" r="21" fill="none" stroke="#ffffff" stroke-width="1.6" opacity=".5"/>
+        </svg>
+        <span class="lp-top__name">
+          KLÜP DIŞ TİCARET
+          <span class="lp-top__sub">LİMİTED ŞİRKETİ</span>
+        </span>
+      </div>
     </div>
+
+    <div class="lp-hero">
+      <h1>Dondurulmuş meyve, sebze, deniz ürünleri ve bakliyat için <em>ön teklif alın</em></h1>
+      <p class="lp-hero__lead">
+        Ürün çeşidinizi, miktarınızı ve bütçenizi girin. Sistem talebinizi uygun gruba
+        ayırsın ve ön teklif sürecini başlatsın.
+      </p>
+
+      <button class="lp-cta" id="startBtn" type="button">
+        <span class="lp-cta__chev" aria-hidden="true">»</span>
+        Hemen Teklif Al
+      </button>
+      <p class="lp-safe">🔒 GÜVENLİ TALEP — BİLGİLERİNİZ GİZLİDİR.</p>
+    </div>
+
+    <ul class="lp-cats">
+      <li class="lp-cat lp-cat--meyve">
+        <span class="lp-cat__label">MEYVE</span>
+        <div class="lp-cat__pic" role="img" aria-label="Dondurulmuş çilek, böğürtlen, ahududu ve yaban mersini"></div>
+      </li>
+      <li class="lp-cat lp-cat--sebze">
+        <span class="lp-cat__label">SEBZE</span>
+        <div class="lp-cat__pic" role="img" aria-label="Dondurulmuş bezelye, taze fasulye, mısır ve ıspanak"></div>
+      </li>
+      <li class="lp-cat lp-cat--deniz">
+        <span class="lp-cat__label">DENİZ ÜRÜNLERİ</span>
+        <div class="lp-cat__pic" role="img" aria-label="Dondurulmuş karides, somon ve beyaz balık filetosu"></div>
+      </li>
+      <li class="lp-cat lp-cat--bakliyat">
+        <span class="lp-cat__label">BAKLİYAT</span>
+        <div class="lp-cat__pic" role="img" aria-label="Nohut, fasulye ve kırmızı mercimek"></div>
+      </li>
+    </ul>
+
+    <ul class="lp-trust">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#F26A1B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2.5 4 5.6v5.6c0 4.7 3.3 8.6 8 10.3 4.7-1.7 8-5.6 8-10.3V5.6z"/>
+          <path d="m8.6 11.8 2.3 2.3 4.5-4.5"/>
+        </svg>
+        Güvenilir tedarik
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#F26A1B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="9" r="6"/>
+          <path d="m8.4 14.2-1.6 7 5.2-2.8 5.2 2.8-1.6-7"/>
+          <path d="m12 6.2 1 2 2.2.3-1.6 1.5.4 2.2-2-1-2 1 .4-2.2L8.8 8.5l2.2-.3z" fill="#F26A1B" stroke="none"/>
+        </svg>
+        Kalite kontrolden geçirilmiş
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#101a2e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 16.5V7.5h11v9"/>
+          <path d="M13 10.5h4.2l2.8 3.2v2.8H13z"/>
+          <circle cx="7" cy="17.5" r="1.9"/>
+          <circle cx="16.5" cy="17.5" r="1.9"/>
+          <path d="M1 10h3M0 13h4" stroke="#F26A1B"/>
+        </svg>
+        Zamanında teslimat
+      </li>
+    </ul>
+
+    <ul class="lp-badges">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#101a2e" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <path d="M12 2v20M3.4 7l17.2 10M20.6 7 3.4 17"/>
+          <path d="M12 5.6 9.6 3.4M12 5.6l2.4-2.2M12 18.4l-2.4 2.2M12 18.4l2.4 2.2"/>
+        </svg>
+        <span>−18&nbsp;°C<br>soğuk zincir</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c8912f" stroke-width="1.5" aria-hidden="true">
+          <path d="M8.5 3.5C5 5.5 3.6 9.5 5 13.5c.9 2.6 2.6 4.6 4.6 5.8" stroke-linecap="round"/>
+          <path d="M15.5 3.5c3.5 2 4.9 6 3.5 10-.9 2.6-2.6 4.6-4.6 5.8" stroke-linecap="round"/>
+          <text x="12" y="15" text-anchor="middle" font-size="9" font-weight="700" fill="#c8912f" stroke="none" font-family="Georgia, serif">27</text>
+        </svg>
+        <span>27 yıllık<br>tecrübe</span>
+      </li>
+    </ul>
+
+    <div class="lp-end">
+      <h2>Teklifiniz 2 dakikada hazır</h2>
+      <p class="muted">Birkaç soru — ürün, miktar, bütçe. Gerisini biz hallediyoruz.</p>
+      <button class="lp-cta" type="button" data-cta>
+        <span class="lp-cta__chev" aria-hidden="true">»</span>
+        Hemen Teklif Al
+      </button>
+    </div>
+
   </header>
 
-  <!-- Erken tıklama yakalayıcı: funnel.js yüklenmeden basılırsa tıklama kaybolmasın -->
+  <!-- Erken tıklama yakalayıcı + alttaki butonu ana butona bağla -->
   <script>
     (function () {
       var btn = document.getElementById("startBtn");
       var pending = false;
       btn.addEventListener("click", function () { pending = true; });
+      document.addEventListener("click", function (e) {
+        var extra = e.target.closest("[data-cta]");
+        if (extra) btn.click();
+      });
       document.addEventListener("DOMContentLoaded", function () {
         if (pending) btn.click();   // asıl işleyici artık bağlı, tıklamayı tekrarla
       });

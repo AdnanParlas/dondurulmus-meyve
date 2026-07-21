@@ -165,89 +165,233 @@ body {
   height: 32px;
 }
 
-/* ---------------- ANA SAYFA (poster) ---------------- */
-.home {
-  min-height: 100vh;
-  min-height: 100dvh;
+/* ---------------- ANA SAYFA ----------------
+   Eskiden burada tek parça poster görseli + üstüne konumlandırılmış saydam
+   buton vardı. Görselin ölçeği kaydığında buton da kayıyordu ve buton
+   görünmediği için nereye basılacağı belli olmuyordu. Artık her şey gerçek
+   metin ve gerçek <button>: kayma yok, klavye/ekran okuyucu çalışıyor.
+   Ürün fotoğrafları hâlâ posterden geliyor, CSS ile kırpılarak. */
+
+.lp { --pane: 1120px; }
+
+/* --- üst bar --- */
+.lp-top {
+  background: #0b0d10;
+  color: #fff;
+  padding: 14px 20px;
+  border-bottom: 3px solid var(--orange);
+}
+.lp-top__in {
+  max-width: var(--pane);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.lp-top__globe { width: 42px; height: 42px; flex: none; }
+.lp-top__name {
+  font-weight: 800;
+  font-size: clamp(17px, 3.6vw, 23px);
+  letter-spacing: .3px;
+  line-height: 1.15;
+}
+.lp-top__sub {
+  display: block;
+  font-weight: 500;
+  font-size: .62em;
+  color: rgba(255,255,255,.72);
+  letter-spacing: 1.2px;
+}
+
+/* --- başlık alanı --- */
+.lp-hero {
+  max-width: var(--pane);
+  margin: 0 auto;
+  padding: clamp(28px, 6vw, 56px) 20px clamp(20px, 4vw, 32px);
+  text-align: center;
+}
+.lp-hero h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-size: clamp(29px, 6.4vw, 52px);
+  line-height: 1.16;
+  letter-spacing: -.5px;
+  color: #101a2e;
+  margin: 0 0 16px;
+  text-wrap: balance;
+}
+.lp-hero h1 em { font-style: normal; color: var(--orange); }
+.lp-hero__lead {
+  max-width: 620px;
+  margin: 0 auto;
+  font-size: clamp(16px, 2.4vw, 19px);
+  color: #46505e;
+}
+
+/* --- ana buton --- */
+.lp-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 470px;
+  min-height: 62px;
+  margin: 26px auto 12px;
+  padding: 16px 30px;
+  border: 2px solid var(--orange);
+  border-radius: 14px;
+  background: #101a2e;
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(19px, 3.4vw, 25px);
+  font-weight: 700;
+  letter-spacing: .3px;
+  cursor: pointer;
+  box-shadow: 0 10px 26px -10px rgba(16,26,46,.6);
+  transition: background .18s ease, transform .12s ease, box-shadow .18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.lp-cta:hover { background: #17233c; box-shadow: 0 14px 32px -10px rgba(242,106,27,.55); }
+.lp-cta:active { transform: translateY(1px); }
+.lp-cta:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+.lp-cta__chev { color: var(--orange); font-size: 1.05em; line-height: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .lp-cta { animation: lpPulse 2s ease 1s 2; }
+  @keyframes lpPulse {
+    0%, 100% { box-shadow: 0 10px 26px -10px rgba(16,26,46,.6); }
+    50%      { box-shadow: 0 0 0 4px rgba(242,106,27,.5), 0 10px 26px -10px rgba(16,26,46,.6); }
+  }
+}
+.lp-safe {
+  font-size: 13.5px;
+  color: var(--muted);
+  letter-spacing: .4px;
+  margin: 0;
+}
+
+/* --- ürün kartları --- */
+.lp-cats {
+  max-width: var(--pane);
+  margin: 0 auto;
+  padding: clamp(18px, 4vw, 34px) 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(10px, 1.6vw, 18px);
+  list-style: none;
+}
+.lp-cat {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  text-align: center;
+}
+.lp-cat__label {
+  display: block;
+  padding: 12px 6px 9px;
+  font-size: clamp(11.5px, 1.5vw, 14px);
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #101a2e;
+}
+.lp-cat__label::after {
+  content: "";
+  display: block;
+  width: 34px; height: 2px;
+  margin: 7px auto 0;
+  background: var(--orange);
+  border-radius: 2px;
+}
+/* Posterden kırpma (881x1664). Kaynak pencere: 195x265, y=830.
+   Değerler posterin pikselleri taranarak ölçüldü, tahmin değil. */
+.lp-cat__pic {
+  aspect-ratio: 195 / 265;
+  background-image: url("../assets/anasayfa.webp?v=1");
+  background-repeat: no-repeat;
+  background-size: 451.795% 627.925%;
+  background-position-y: 59.328%;
+}
+.lp-cat--meyve    .lp-cat__pic { background-position-x: 2.332%; }
+.lp-cat--sebze    .lp-cat__pic { background-position-x: 33.382%; }
+.lp-cat--deniz    .lp-cat__pic { background-position-x: 65.015%; }
+.lp-cat--bakliyat .lp-cat__pic { background-position-x: 96.939%; }
+
+/* --- güven şeridi --- */
+.lp-trust {
+  max-width: var(--pane);
+  margin: 0 auto;
+  padding: 0 20px clamp(20px, 4vw, 30px);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(10px, 1.6vw, 16px);
+  list-style: none;
+}
+.lp-trust li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 18px 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  font-size: clamp(13px, 1.8vw, 15.5px);
+  text-align: center;
+  color: #2b3646;
+}
+.lp-trust svg { width: 34px; height: 34px; flex: none; }
+
+/* --- rozetler --- */
+.lp-badges {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 20px clamp(24px, 5vw, 40px);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(10px, 1.6vw, 16px);
+  list-style: none;
+}
+.lp-badges li {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--ice);
+  border: 1px solid #dbe7f2;
+  border-radius: 14px;
+  font-size: clamp(13.5px, 1.9vw, 16px);
+  font-weight: 600;
+  color: #23303f;
+  text-align: left;
 }
-/* Poster ekrana tam sığar (oranlar korunur; buton dahil hepsi ilk açılışta görünür).
-   Ölçü kapsayıcıda: görsel daha inmeden yer ayrılır, böylece CTA ilk andan tıklanabilir. */
-.poster {
-  position: relative;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  font-size: 0;                /* satır içi boşluğu kaldır */
-  background: #e9e9e9;         /* görsel inene kadar boş beyaz yerine zemin */
-  aspect-ratio: 881 / 1664;
-  /* genişlik: yatay sınır, doğal boyut ve dikey sınırın izin verdiği genişliğin en küçüğü */
-  width: min(calc(100vw - 20px), 881px, calc((100vh - 20px) * 881 / 1664));
-  width: min(calc(100vw - 20px), 881px, calc((100dvh - 20px) * 881 / 1664));
-  max-width: 100%;
-  height: auto;
+.lp-badges svg { width: 34px; height: 34px; flex: none; }
+
+/* --- alt kapanış --- */
+.lp-end {
+  text-align: center;
+  padding: clamp(26px, 5vw, 44px) 20px clamp(30px, 6vw, 52px);
+  background: linear-gradient(180deg, transparent, rgba(238,245,251,.75));
+  border-top: 1px solid var(--line);
 }
-/* <picture> sarmalayıcısından etkilenmesin diye kapsayıcıyı birebir doldurur */
-.poster__img {
-  display: block;
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.lp-end h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(21px, 3.6vw, 30px);
+  color: #101a2e;
+  margin: 0 0 6px;
 }
-/* Masaüstü / geniş ekran: büyük poster + antrasit zemin (form sayfası dahil) */
-@media (min-width: 768px) {
-  body { background: #2c3033; }           /* form açılınca yanlarda kalan alanlar da antrasit */
-  .home {
-    align-items: flex-start;
-    padding: 28px 20px 40px;
-    background: #2c3033;                    /* ana sayfa yanları antrasit */
-  }
-  .poster {
-    box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 24px 60px rgba(0,0,0,.5);
-    /* Genişlik: tercih 496px (onceki 661px'in ~%75'i), ama pencere alçaksa
-       posteri kısaltıp CTA'nın katlanmanın altında kalmasını önler.
-       68px = .home dikey padding (28 üst + 40 alt). 340px alt sınır: çok alçak
-       pencerelerde poster okunmaz hale gelmesin (orada kaydırma kabul edilir). */
-    width: max(340px, min(496px, calc(100vw - 40px), calc((100vh - 68px) * 881 / 1664)));
-    width: max(340px, min(496px, calc(100vw - 40px), calc((100dvh - 68px) * 881 / 1664)));
-  }
-  .site-footer {
-    color: rgba(255,255,255,.65);
-    border-top-color: rgba(255,255,255,.12);
-  }
-}
-/* yalnızca "Hemen Teklif Al" butonu tıklanabilir (görseldeki konum, yüzde bazlı) */
-.poster__cta {
-  position: absolute;
-  left: 4%;
-  top: 89.2%;
-  width: 92%;
-  height: 7.4%;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  border-radius: 12px;
-  -webkit-tap-highlight-color: transparent;
-  transition: box-shadow .2s ease, transform .12s ease;
-}
-.poster__cta:hover {
-  box-shadow: 0 0 0 3px rgba(242,106,27,.9), 0 10px 26px -8px rgba(242,106,27,.55);
-}
-.poster__cta:active { transform: translateY(1px); }
-.poster__cta:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
-@media (prefers-reduced-motion: no-preference) {
-  .poster__cta { animation: ctapulse 1.9s ease 1.2s 2; }
-  @keyframes ctapulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(242,106,27,0); }
-    50%      { box-shadow: 0 0 0 3px rgba(242,106,27,.85), 0 8px 22px -6px rgba(242,106,27,.5); }
-  }
+.lp-end p { margin: 0 0 4px; color: #46505e; }
+.lp-end .lp-cta { margin-top: 20px; }
+
+/* --- mobil --- */
+@media (max-width: 640px) {
+  .lp-cats   { grid-template-columns: repeat(2, 1fr); }
+  .lp-trust  { grid-template-columns: 1fr; }
+  .lp-trust li { flex-direction: row; text-align: left; padding: 14px 16px; }
+  .lp-badges { grid-template-columns: 1fr; }
 }
 
 /* ---------------- FUNNEL ---------------- */
