@@ -36,6 +36,13 @@
     .btn--danger { background: #c0392b; color: #fff; }
     .empty { text-align: center; color: var(--muted); padding: 30px; }
 
+    /* İçe aktarma: sütun eşleştirme */
+    .imp-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin: 14px 0; }
+    .imp-map:empty { margin: 0; }
+    .imp-row { display: flex; align-items: center; gap: 8px; font-size: .84rem; }
+    .imp-row > span { color: var(--muted); width: 92px; flex-shrink: 0; }
+    .imp-row select { margin: 0; padding: 7px 9px; font-size: .82rem; }
+
     /* Funnel düşüş raporu */
     .fn-top { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 6px 0 18px; }
     .fn-kpi { background: var(--bg, #f6f7f9); border: 1px solid var(--line); border-radius: 11px; padding: 12px; text-align: center; }
@@ -244,6 +251,16 @@
     </div>
 
     <div class="panel">
+      <h3>⬆️ Meta / CSV ile lead içe aktar</h3>
+      <p class="row-hint">Meta Ads Manager'dan indirdiğiniz lead dosyasını seçin (.csv veya .xlsx).
+        Sütunlar otomatik eşleştirilir; yanlışsa aşağıdan elle düzeltebilirsiniz. Eklemeden önce önizleme gösterilir.</p>
+      <input type="file" id="impFile" accept=".csv,.xlsx,.xls" class="text-input">
+      <div id="impMap" class="imp-map"></div>
+      <div id="impPreview"></div>
+      <button class="btn btn--cta btn--sm" id="impRun" disabled style="margin-top:12px">Önce dosya seçin</button>
+    </div>
+
+    <div class="panel">
       <div class="topbar">
         <h3 style="margin:0">📉 Ziyaretçi Düşüş Raporu</h3>
         <select id="funnelRange" class="text-input" style="width:auto;padding:7px 10px;margin:0">
@@ -305,7 +322,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js?v=20"></script>
-  <script src="js/supabase.js?v=26"></script>
-  <script src="js/admin.js?v=45"></script>
+  <script src="js/supabase.js?v=27"></script>
+  <script src="js/scoring.js?v=31"></script>
+  <script src="js/import.js?v=1"></script>
+  <script src="js/admin.js?v=46"></script>
 </body>
 </html>

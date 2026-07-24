@@ -492,6 +492,8 @@ function download(name, content, type) {
   a.download = name; a.click();
   URL.revokeObjectURL(a.href);
 }
+document.getElementById("impFile").addEventListener("change", impDosyaSecildi);
+document.getElementById("impRun").addEventListener("click", impCalistir);
 document.getElementById("funnelRange").addEventListener("change", e => {
   funnelGun = +e.target.value; renderFunnel();
 });
